@@ -12,6 +12,7 @@ public class Entity implements Serializable {
     private double y;
     private double rotation;
     private boolean isDestroyed;
+    private boolean isPlayer;
 
 
     public String getID() {
@@ -60,5 +61,13 @@ public class Entity implements Serializable {
 
     public void setDestroyed(boolean destroyed) {
         isDestroyed = destroyed;
+    }
+
+    public boolean isPlayer() {
+        return isPlayer;
+    }
+
+    public void setPlayer(boolean player) {
+        isPlayer = player;
     }
 }

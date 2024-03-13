@@ -8,10 +8,7 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +30,10 @@ public class Main extends Application {
     private final World world = new World();
     private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
     private Pane gameWindow;
+    private Text fpsCountText;
+
+//    private Text tpsCountText;
+//    private final int TPSLIMIT = 2;
 
 
     public static void main(String[] args) {
@@ -41,10 +42,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage window) throws Exception {
-        Text text = new Text(10, 20, "Destroyed asteroids: 0");
+        Text text = new Text(10, 20, "Destroyed asteroids: ");
+        fpsCountText = new Text(10, 40, "FPS: ");
+//        tpsCountText = new Text(10, 60, "TPS: ");
         gameWindow = new Pane();
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         gameWindow.getChildren().add(text);
+        gameWindow.getChildren().add(fpsCountText);
+//        gameWindow.getChildren().add(tpsCountText);
 
         Scene scene = new Scene(gameWindow);
         scene.setOnKeyPressed(event -> {
@@ -96,19 +101,48 @@ public class Main extends Application {
 
     private void render() {
         new AnimationTimer() {
-            private long then = 0;
+            private long deltaThen = System.nanoTime();
+            private long deltaNow;
+            private int deltaNowSeconds;
+            private int fpsCount;
+//            private int tpsCount;
 
             @Override
             public void handle(long now) {
-                update();
+                deltaNow = (System.nanoTime() - deltaThen);
+                deltaThen = System.nanoTime();
+
+                gameData.setDelta(deltaNow);
+                deltaNowSeconds += deltaNow;
+
+                fpsCount++;
+
+                update(deltaNow);
                 draw();
                 gameData.getKeys().update();
+
+                if (deltaNowSeconds * 0.000000001 > 1f) {
+                    fpsCountText.setText("FPS: " + fpsCount);
+                    fpsCount = 0;
+//                    tpsCountText.setText("TPS: " + tpsCount);
+//                    tpsCount = 0;
+                    deltaNowSeconds -= 1000000000;
+                }
+
+                // Below is code for handling TPS (Ticks Per Second).
+                // With the code, it is possible to limit the amount of allowed ticks in a second.
+//                if (gameData.getDeltaStacking() * 0.000000001 < (1f / TPSLIMIT)) {
+//                    return;
+//                }
+//
+//                tpsCount++;
+//                gameData.setDeltaStacking(gameData.getDeltaStacking() - (long) (1f / TPSLIMIT * 1000000000));
             }
 
         }.start();
     }
 
-    private void update() {
+    private void update(long deltaNow) {
         for (Entity entity : world.getEntities()) {
             if (entity.isDestroyed()) {
                 gameWindow.getChildren().remove(polygons.get(entity));

@@ -3,7 +3,6 @@ package dk.sdu.mmmi.cbse.enemysystem;
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
-import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
@@ -15,35 +14,63 @@ import static java.util.stream.Collectors.toList;
 
 public class EnemyControlSystem implements IEntityProcessingService {
 
-    static float rotationSpeed = 2;
+    private static final double SPEED = 0.75;
+    private static final double ROTATIONSPEED = 1.75;
 
     @Override
     public void process(GameData gameData, World world) {
         for (Entity enemy : world.getEntities(Enemy.class)) {
-            // When the LEFT arrow button is pressed, rotates to the left.
 
-            int rotationRandomNumber = (int) Math.round(Math.random() * 3);
-            int moveRandomNumber = (int) Math.round(Math.random() * 1);
-            int shootRandomNumber = (int) Math.round(Math.random() * 500);
+            // Constant movement handling
+            double changeX = Math.cos(Math.toRadians(enemy.getRotation())) * SPEED * (1 + gameData.getDeltaSeconds());
+            double changeY = Math.sin(Math.toRadians(enemy.getRotation())) * SPEED * (1 + gameData.getDeltaSeconds());
 
-            if (rotationRandomNumber == 1) {
-                enemy.setRotation(enemy.getRotation() - rotationSpeed);
-            } else if (rotationRandomNumber == 2) {
-                enemy.setRotation(enemy.getRotation() + rotationSpeed);
-            }
+            enemy.setX(enemy.getX() + changeX);
+            enemy.setY(enemy.getY() + changeY);
 
-            if (moveRandomNumber == 1) {
-                double changeX = Math.cos(Math.toRadians(enemy.getRotation()));
-                double changeY = Math.sin(Math.toRadians(enemy.getRotation()));
-                enemy.setX(enemy.getX() + changeX);
-                enemy.setY(enemy.getY() + changeY);
-            }
 
-            if (shootRandomNumber == 1) {
-                for (BulletSPI bulletSPI : getBulletSPIs()) {
-                    world.addEntity(bulletSPI.createBullet(enemy, gameData));
+            // Rotation handling
+            for (Entity player : world.getEntities()) {
+                if (player.isPlayer()) {
+                    double distanceX = player.getX() - enemy.getX();
+                    double distanceY = player.getY() - enemy.getY();
+
+                    double angle = Math.toDegrees(Math.atan2(distanceY, distanceX));
+
+                    angle = (angle + 360) % 360;
+
+                    if (angle > 180) {
+                        angle -= 360;
+                    }
+
+                    double delta = enemy.getRotation() - angle;
+                    if (delta > 180) {
+                        delta -= 360;
+                    } else if (delta <= -180) {
+                        delta += 360;
+                    }
+
+                    if (Math.abs(delta) > ROTATIONSPEED) {
+                        if (delta > 0) {
+                            enemy.setRotation(enemy.getRotation() - ROTATIONSPEED);
+                        } else {
+                            enemy.setRotation(enemy.getRotation() + ROTATIONSPEED);
+                        }
+                    } else {
+                        enemy.setRotation(angle);
+                    }
+
+
+                    // Shooting handling
+                    if (angle - 7.5 < enemy.getRotation() && angle + 7.5 > enemy.getRotation()) {
+                        for (BulletSPI bulletSPI : getBulletSPIs()) {
+                            world.addEntity(bulletSPI.createBullet(enemy, gameData));
+                            // TODO: Cooldown for shooting
+                        }
+                    }
                 }
             }
+
 
             // TODO: Add configuration for disabling the border.
             // Ensures the enemy doesn't go out of bound.
