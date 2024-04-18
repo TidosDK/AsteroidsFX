@@ -4,6 +4,7 @@ import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.player.Player;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
 import java.util.Collection;
@@ -31,7 +32,7 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
             // Rotation handling
             for (Entity player : world.getEntities()) {
-                if (player.isPlayer()) {
+                if (player instanceof Player) {
                     double distanceX = player.getX() - enemy.getX();
                     double distanceY = player.getY() - enemy.getY();
 

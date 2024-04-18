@@ -12,7 +12,7 @@ public class Entity implements Serializable {
     private double y;
     private double rotation;
     private boolean isDestroyed;
-    private boolean isPlayer;
+    private boolean isPlayer; // TODO: Remove
 
 
     public String getID() {
