@@ -4,7 +4,8 @@ import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
-import dk.sdu.mmmi.cbse.common.player.Player;
+import dk.sdu.mmmi.cbse.common.enemy.CommonEnemy;
+import dk.sdu.mmmi.cbse.common.player.CommonPlayer;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
 import java.util.Collection;
@@ -20,7 +21,7 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity enemy : world.getEntities(Enemy.class)) {
+        for (Entity enemy : world.getEntities(CommonEnemy.class)) {
 
             // Constant movement handling
             double changeX = Math.cos(Math.toRadians(enemy.getRotation())) * SPEED * (1 + gameData.getDeltaSeconds());
@@ -32,7 +33,7 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
             // Rotation handling
             for (Entity player : world.getEntities()) {
-                if (player instanceof Player) {
+                if (player instanceof CommonPlayer) {
                     double distanceX = player.getX() - enemy.getX();
                     double distanceY = player.getY() - enemy.getY();
 

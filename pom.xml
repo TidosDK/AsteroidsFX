@@ -18,6 +18,7 @@
         <module>CommonBullet</module>
         <module>Enemy</module>
         <module>CommonPlayer</module>
+        <module>CommonEnemy</module>
     </modules>
     <properties>
         <java>java</java>

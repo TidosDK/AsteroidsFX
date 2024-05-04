@@ -5,5 +5,5 @@ import dk.sdu.mmmi.cbse.common.data.Entity;
 /**
  * @author tidosdk
  */
-public class Player extends Entity {
+public class CommonPlayer extends Entity {
 }
