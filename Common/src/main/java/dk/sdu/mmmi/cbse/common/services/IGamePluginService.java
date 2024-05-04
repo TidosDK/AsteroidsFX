@@ -11,23 +11,23 @@ import dk.sdu.mmmi.cbse.common.data.World;
 public interface IGamePluginService {
 
     /**
-     * Called when a new object of the class is initialized.
-     * Should be used for constructing the component.
+     * Called when a component is initialized.
+     * Can be used for constructing the component.
      *
      * <p>Pre-conditions:</p>
      * <ul>
-     *     <li>Initialisation of the class has been called</li>
-     *     <li>{@code gameData} isn't {@code null}</li>
+     *     <li>The component has been called to initialize</li>
+     *     <li>{@code gamedata} isn't {@code null}</li>
      *     <li>{@code world} isn't {@code null}</li>
      * </ul>
      *
      * <p>Post-conditions:</p>
      * <ul>
-     *     <li>The component has been initialized and added to the {@code world} object</li>
+     *     <li>The component has been initialized in the {@code world}.</li>
      * </ul>
      *
-     * @param gameData Holds non-game data (e.g. key inputs). Must not be {@code null}.
-     * @param world Holds game related data such as Entities in the world. Must not be {@code null}.
+     * @param gameData Holds non-game related data such as key inputs. Must not be {@code null}
+     * @param world    Mainly holds entities in the world to handle. Must not be {@code null}.
      */
     void start(GameData gameData, World world);
 
@@ -36,18 +36,18 @@ public interface IGamePluginService {
      *
      * <p>Pre-conditions:</p>
      * <ul>
-     *     <li>Deletion of the object has been called</li>
+     *     <li>The component has been called to delete</li>
      *     <li>{@code gameData} isn't {@code null}</li>
      *     <li>{@code world} isn't {@code null}</li>
      * </ul>
      *
      * <p>Post-conditions:</p>
      * <ul>
-     *     <li>The component has been removed from the {@code world} object</li>
+     *     <li>The component has been removed from the {@code world}.</li>
      * </ul>
      *
-     * @param gameData Holds non-game data (e.g. key inputs). Must not be {@code null}.
-     * @param world Holds game related data such as Entities in the world. Must not be {@code null}.
+     * @param gameData Holds non-game related data such as key inputs. Must not be {@code null}
+     * @param world    Mainly holds entities in the world to handle. Must not be {@code null}.
      */
     void stop(GameData gameData, World world);
 }
