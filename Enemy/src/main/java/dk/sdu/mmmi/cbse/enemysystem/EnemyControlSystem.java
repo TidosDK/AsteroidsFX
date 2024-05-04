@@ -15,8 +15,8 @@ import static java.util.stream.Collectors.toList;
 
 public class EnemyControlSystem implements IEntityProcessingService {
 
-    private static final double SPEED = 0.75;
-    private static final double ROTATIONSPEED = 1.75;
+    private static final double SPEED = 0.60;
+    private static final double ROTATIONSPEED = 0.75;
 
     @Override
     public void process(GameData gameData, World world) {
@@ -63,10 +63,14 @@ public class EnemyControlSystem implements IEntityProcessingService {
 
 
                     // Shooting handling
-                    if (angle - 7.5 < enemy.getRotation() && angle + 7.5 > enemy.getRotation()) {
+                    if (angle - 10 < enemy.getRotation() && angle + 10 > enemy.getRotation()) {
                         for (BulletSPI bulletSPI : getBulletSPIs()) {
-                            world.addEntity(bulletSPI.createBullet(enemy, gameData));
-                            // TODO: Cooldown for shooting
+                            double randomChanceOfShooting = (Math.random() * 100);
+                            // 1% chance of shooting
+                            if (randomChanceOfShooting <= 1) {
+                                world.addEntity(bulletSPI.createBullet(enemy, gameData));
+                            }
+                            // TODO: Proper cooldown for shooting
                         }
                     }
                 }

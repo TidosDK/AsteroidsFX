@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 public class PlayerControlSystem implements IEntityProcessingService, PlayerSPI {
 
     private static final double SPEED = 1.25;
-    private static final double ROTATIONSPEED = 3;
+    private static final double ROTATIONSPEED = 2;
 
     @Override
     public void process(GameData gameData, World world) {
