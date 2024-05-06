@@ -19,6 +19,8 @@
         <module>Enemy</module>
         <module>CommonPlayer</module>
         <module>CommonEnemy</module>
+        <module>CommonAsteroid</module>
+        <module>Asteroid</module>
     </modules>
     <properties>
         <java>java</java>
