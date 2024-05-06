@@ -1,6 +1,5 @@
 package dk.sdu.mmmi.cbse.playersystem;
 
-import dk.sdu.mmmi.cbse.common.player.CommonPlayer;
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
@@ -20,7 +19,7 @@ public class PlayerControlSystem implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity player : world.getEntities(CommonPlayer.class)) {
+        for (Entity player : world.getEntities(Player.class)) {
             // When the LEFT arrow button is pressed, rotates to the left.
             if (gameData.getKeys().isDown(GameKeys.LEFT)) {
                 player.setRotation(player.getRotation() - ROTATIONSPEED * SPEED * (1 + gameData.getDeltaSeconds()));

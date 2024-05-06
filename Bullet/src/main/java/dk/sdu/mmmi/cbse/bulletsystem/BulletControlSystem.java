@@ -1,6 +1,5 @@
 package dk.sdu.mmmi.cbse.bulletsystem;
 
-import dk.sdu.mmmi.cbse.common.bullet.Bullet;
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
@@ -33,11 +32,12 @@ public class BulletControlSystem implements IEntityProcessingService, BulletSPI 
 
     @Override
     public Entity createBullet(Entity shooter, GameData gameData) {
-        Entity bullet = new Bullet();
+        Bullet bullet = new Bullet();
         bullet.setPolygonCoordinates(-3, -1, 3, -1, 3, 1, -3, 1);
         bullet.setX(shooter.getX());
         bullet.setY(shooter.getY());
         bullet.setRotation(shooter.getRotation());
+        bullet.setBoundingCircleRadius(3);
         return bullet;
     }
 
