@@ -8,6 +8,7 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -156,16 +157,16 @@ public class Main extends Application {
             entityProcessorService.process(gameData, world);
         }
 
+        for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
+            postEntityProcessorService.process(gameData, world);
+        }
+
         for (Entity entity : world.getEntities()) {
             if (polygons.get(entity) == null) {
                 Polygon polygon = new Polygon(entity.getPolygonCoordinates());
                 polygons.put(entity, polygon);
                 gameWindow.getChildren().add(polygon);
             }
-        }
-
-        for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
-            postEntityProcessorService.process(gameData, world);
         }
     }
 

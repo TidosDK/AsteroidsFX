@@ -1,4 +1,4 @@
-import dk.sdu.mmmi.cbse.bulletsystem.Bullet;
+import dk.sdu.mmmi.cbse.bulletsystem.BulletShooter;
 import dk.sdu.mmmi.cbse.bulletsystem.BulletControlSystem;
 import dk.sdu.mmmi.cbse.bulletsystem.BulletPlugin;
 import dk.sdu.mmmi.cbse.common.bullet.BulletSPI;
@@ -12,5 +12,5 @@ module Bullet {
     provides IGamePluginService with BulletPlugin;
     provides BulletSPI with BulletControlSystem;
     provides IEntityProcessingService with BulletControlSystem;
-    provides IEntityCircleCollision with Bullet;
+    provides IEntityCircleCollision with BulletShooter;
 }

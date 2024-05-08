@@ -26,7 +26,10 @@ public class EnemyPlugin implements IGamePluginService {
         enemyShip.setX((double) gameData.getDisplayHeight() / 2 + 10);
         enemyShip.setY((double) gameData.getDisplayWidth() / 2);
 
+        enemyShip.setHealthPoints(3);
+
         enemyShip.setBoundingCircleRadius(5);
+
         return enemyShip;
     }
 

@@ -18,6 +18,8 @@ public interface IEntityCircleCollision {
      * <ul>
      *     <li>The radius of the circular collision boundary has been retrieved</li>
      * </ul>
+     *
+     * @return The bounding circle radius as a double.
      */
     double getBoundingCircleRadius();
 }

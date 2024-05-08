@@ -5,6 +5,11 @@ import dk.sdu.mmmi.cbse.common.services.IEntityCircleCollision;
 module Collision {
     exports dk.sdu.mmmi.cbse.collisionsystem;
     requires Common;
+    requires CommonAsteroid;
+    requires CommonBullet;
+    requires CommonEnemy;
+    requires CommonPlayer;
     uses IEntityCircleCollision;
+    uses dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
     provides IPostEntityProcessingService with CollisionControlSystem;
 }

@@ -16,7 +16,8 @@ public interface IGamePluginService {
      *
      * <p>Pre-conditions:</p>
      * <ul>
-     *     <li>The component has been called to initialize</li>
+     *     <li>The component has not been initialized.</li>
+     *     <li>The {@code start()} method must not have been called before, unless the {@code stop()} method has been called.</li>
      *     <li>{@code gamedata} isn't {@code null}</li>
      *     <li>{@code world} isn't {@code null}</li>
      * </ul>
@@ -37,6 +38,7 @@ public interface IGamePluginService {
      * <p>Pre-conditions:</p>
      * <ul>
      *     <li>The component has been called to delete</li>
+     *     <li>The {@code stop()} method must not have been called before, unless the {@code start()} method has been called.</li>
      *     <li>{@code gameData} isn't {@code null}</li>
      *     <li>{@code world} isn't {@code null}</li>
      * </ul>
