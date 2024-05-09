@@ -8,11 +8,15 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.lang.module.Configuration;
+import java.lang.module.ModuleDescriptor;
+import java.lang.module.ModuleFinder;
+import java.lang.module.ModuleReference;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -32,12 +36,32 @@ public class Main extends Application {
     private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
     private Pane gameWindow;
     private Text fpsCountText;
+    private static ModuleLayer moduleLayer;
 
 //    private Text tpsCountText;
 //    private final int TPSLIMIT = 2;
 
 
     public static void main(String[] args) {
+        Path pluginDirectory = Paths.get("plugins");
+
+        ModuleFinder pluginFinder = ModuleFinder.of(pluginDirectory);
+
+        List<String> listOfPlugins = pluginFinder
+                .findAll()
+                .stream()
+                .map(ModuleReference::descriptor)
+                .map(ModuleDescriptor::name)
+                .collect(Collectors.toList());
+
+        Configuration pluginConfiguration = ModuleLayer.boot()
+                .configuration()
+                .resolve(pluginFinder, ModuleFinder.of(), listOfPlugins);
+
+        Main.moduleLayer = ModuleLayer
+                .boot()
+                .defineModulesWithOneLoader(pluginConfiguration, ClassLoader.getSystemClassLoader());
+
         launch(Main.class);
     }
 
@@ -180,14 +204,14 @@ public class Main extends Application {
     }
 
     private Collection<? extends IGamePluginService> getPluginServices() {
-        return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        return ServiceLoader.load(moduleLayer, IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 
     private Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
-        return ServiceLoader.load(IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        return ServiceLoader.load(moduleLayer, IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 
     private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
-        return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        return ServiceLoader.load(moduleLayer, IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }
