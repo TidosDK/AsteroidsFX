@@ -13,11 +13,19 @@ import dk.sdu.mmmi.cbse.common.services.IEntityCircleCollision;
 import dk.sdu.mmmi.cbse.common.services.IEntityHealthPoints;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
 public class CollisionControlSystem implements IPostEntityProcessingService {
+
+    private HttpClient httpClient = HttpClient.newHttpClient();
+
     @Override
     public void process(GameData gameData, World world) {
         Set<String> checkedEntityPairsHashCode = new HashSet<>();
@@ -106,11 +114,31 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
                 this.getAsteroidSPI().stream().findFirst().ifPresent(spi -> spi.splitAsteroid(secondEntity, world));
                 firstEntity.setDestroyed(true);
                 secondEntity.setDestroyed(true);
+
+                if (((IBulletShooter) firstEntity).getShooter() instanceof CommonPlayer) {
+                    this.addToScore(1);
+                }
             } else {
                 this.getAsteroidSPI().stream().findFirst().ifPresent(spi -> spi.splitAsteroid(firstEntity, world));
                 secondEntity.setDestroyed(true);
                 firstEntity.setDestroyed(true);
+                if (((IBulletShooter) secondEntity).getShooter() instanceof CommonPlayer) {
+                    this.addToScore(1);
+                }
             }
+        }
+    }
+
+    private void addToScore(int points) {
+        HttpRequest requestAddToScore = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/scoresystem/score/add/" + points))
+                .PUT(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+
+        try {
+            httpClient.send(requestAddToScore, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -9,6 +9,7 @@ module Collision {
     requires CommonBullet;
     requires CommonEnemy;
     requires CommonPlayer;
+    requires java.net.http;
     uses IEntityCircleCollision;
     uses dk.sdu.mmmi.cbse.common.asteroid.AsteroidSPI;
     provides IPostEntityProcessingService with CollisionControlSystem;

@@ -8,7 +8,11 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -31,7 +35,10 @@ public class Main extends Application {
     private final World world = new World();
     private final Map<Entity, Polygon> polygons = new ConcurrentHashMap<>();
     private Pane gameWindow;
+    private Text scoreText;
     private Text fpsCountText;
+
+    private HttpClient httpClient = HttpClient.newHttpClient();
 
 //    private Text tpsCountText;
 //    private final int TPSLIMIT = 2;
@@ -43,12 +50,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage window) throws Exception {
-        Text text = new Text(10, 20, "Destroyed asteroids: ");
+        this.scoreText = new Text(10, 20, "Destroyed asteroids: ");
         fpsCountText = new Text(10, 40, "FPS: ");
 //        tpsCountText = new Text(10, 60, "TPS: ");
         gameWindow = new Pane();
         gameWindow.setPrefSize(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-        gameWindow.getChildren().add(text);
+        gameWindow.getChildren().add(scoreText);
         gameWindow.getChildren().add(fpsCountText);
 //        gameWindow.getChildren().add(tpsCountText);
 
@@ -159,6 +166,18 @@ public class Main extends Application {
 
         for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
             postEntityProcessorService.process(gameData, world);
+        }
+
+        HttpRequest requestGetScore = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/scoresystem/score/get"))
+                .GET().build();
+
+        // Retrieves the score for amount of asteroids destroyed.
+        try {
+            HttpResponse<String> responseGetScore = httpClient.send(requestGetScore, HttpResponse.BodyHandlers.ofString());
+            scoreText.setText("Destroyed asteroids: " + responseGetScore.body());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
         for (Entity entity : world.getEntities()) {
