@@ -137,8 +137,7 @@ public class CollisionControlSystem implements IPostEntityProcessingService {
 
         try {
             httpClient.send(requestAddToScore, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (IOException | InterruptedException ignored) {
         }
     }
 

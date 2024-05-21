@@ -177,7 +177,7 @@ public class Main extends Application {
             HttpResponse<String> responseGetScore = httpClient.send(requestGetScore, HttpResponse.BodyHandlers.ofString());
             scoreText.setText("Destroyed asteroids: " + responseGetScore.body());
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            scoreText.setText("Destroyed asteroids: NOT FOUND");
         }
 
         for (Entity entity : world.getEntities()) {
