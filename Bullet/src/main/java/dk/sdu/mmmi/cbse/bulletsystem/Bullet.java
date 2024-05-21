@@ -5,12 +5,12 @@ import dk.sdu.mmmi.cbse.common.bullet.IBulletShooter;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.services.IEntityCircleCollision;
 
-public class BulletShooter extends CommonBullet implements IEntityCircleCollision, IBulletShooter {
+public class Bullet extends CommonBullet implements IEntityCircleCollision, IBulletShooter {
 
     private double boundingCircleRadius;
     private Entity shooter;
 
-    public BulletShooter() {
+    public Bullet() {
     }
 
     @Override
